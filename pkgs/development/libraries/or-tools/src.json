@@ -1,0 +1,7 @@
+{
+  "url": "https://github.com/google/or-tools",
+  "rev": "a220b1b1463bb58dfc0521ec25eb464fd773f5b2",
+  "sha256": "0yp0f5l6haw6ivbn9pd7zwf2j3zlf2cf2pmdf2a1ampc8wbjjwhj",
+  "fetchSubmodules": true,
+  "leaveDotGit": true
+}

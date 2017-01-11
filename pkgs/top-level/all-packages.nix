@@ -9346,6 +9346,12 @@ in
 
   qrupdate = callPackage ../development/libraries/qrupdate { };
 
+  or-tools = callPackage ../development/libraries/or-tools ({
+    python=python27;
+    protobuf=protobuf3_0;
+  }
+  );
+
   redland = pkgs.librdf_redland;
 
   resolv_wrapper = callPackage ../development/libraries/resolv_wrapper { };
