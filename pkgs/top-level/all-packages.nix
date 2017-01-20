@@ -12597,6 +12597,7 @@ in
   cbatticon = callPackage ../applications/misc/cbatticon { };
 
   cbc = callPackage ../applications/science/math/cbc { };
+  clp = callPackage ../applications/science/math/clp { };
 
   cddiscid = callPackage ../applications/audio/cd-discid {
     inherit (darwin) IOKit;
