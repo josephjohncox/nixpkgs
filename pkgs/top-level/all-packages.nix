@@ -9113,6 +9113,10 @@ in
 
   protobuf = protobuf2_6;
   protobuf3_0 = lowPrio (callPackage ../development/libraries/protobuf/3.0.nix { });
+  protobuf_java = protobuf_java_3_0;
+  protobuf_java_3_0 = lowPrio (callPackage ../development/libraries/protobuf/java-3.0.nix {
+    protobuf = protobuf3_0;
+  });
   # 3.0.0-beta-2 is only introduced for tensorflow. remove this version when tensorflow is moved to 3.0.
   protobuf3_0_0b2 = lowPrio (callPackage ../development/libraries/protobuf/3.0.0-beta-2.nix { });
   protobuf3_1 = callPackage ../development/libraries/protobuf/3.1.nix { };
@@ -9348,7 +9352,18 @@ in
 
   or-tools = callPackage ../development/libraries/or-tools ({
     python=python27;
-    protobuf=protobuf3_0;
+    protobuf = lib.overrideDerivation protobuf3_0 (args: {
+      dontDisableStatic = true;
+      configureFlags = "--enable-static";
+    });
+    glpk = lib.overrideDerivation glpk (args: {
+      dontDisableStatic = true;
+      configureFlags = "--enable-static";
+    });
+    cbc = lib.overrideDerivation cbc (args: {
+      dontDisableStatic = true;
+      configureFlags = "--enable-static";
+    });
   }
   );
 
