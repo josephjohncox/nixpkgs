@@ -182,6 +182,8 @@ let
       inherit (pkgs) fontconfig;
     };
 
+    fpath = callPackage ../development/ocaml-modules/fpath { };
+
     functory = callPackage ../development/ocaml-modules/functory { };
 
     gen = callPackage ../development/ocaml-modules/gen { };
@@ -346,6 +348,8 @@ let
     ocsigen_server = callPackage ../development/ocaml-modules/ocsigen-server { };
 
     ojquery = callPackage ../development/ocaml-modules/ojquery { };
+
+    omd = callPackage ../development/ocaml-modules/omd { };
 
     otfm = callPackage ../development/ocaml-modules/otfm { };
 

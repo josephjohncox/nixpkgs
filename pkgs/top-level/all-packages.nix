@@ -5,9 +5,7 @@
  * to merges. Please use the full-text search of your editor. ;)
  * Hint: ### starts category names.
  */
-{ system, noSysDirs, config, crossSystem, platform, lib
-, nixpkgsFun
-}:
+{ lib, nixpkgsFun, noSysDirs, config}:
 self: pkgs:
 
 with pkgs;
@@ -17,9 +15,6 @@ let
 in
 
 {
-
-  # Make some arguments passed to all-packages.nix available
-  inherit system platform;
 
   # Allow callPackage to fill in the pkgs argument
   inherit pkgs;
@@ -867,6 +862,8 @@ in
 
   filebench = callPackage ../tools/misc/filebench { };
 
+  fsmon = callPackage ../tools/misc/fsmon { };
+
   fop = callPackage ../tools/typesetting/fop { };
 
   fondu = callPackage ../tools/misc/fondu { };
@@ -880,6 +877,8 @@ in
   fzy = callPackage ../tools/misc/fzy { };
 
   gdrivefs = python27Packages.gdrivefs;
+
+  go-dependency-manager = callPackage ../development/tools/gdm { };
 
   gencfsm = callPackage ../tools/security/gencfsm { };
 
@@ -1267,6 +1266,8 @@ in
 
   cloud-utils = callPackage ../tools/misc/cloud-utils { };
 
+  ckb = qt5.callPackage ../tools/misc/ckb { };
+
   compass = callPackage ../development/tools/compass { };
 
   convmv = callPackage ../tools/misc/convmv { };
@@ -1488,7 +1489,7 @@ in
 
   dtach = callPackage ../tools/misc/dtach { };
 
-  dtc = callPackage ../development/compilers/dtc { };
+  dtc = callPackage ../development/compilers/dtc { flex = flex_2_6_1; };
 
   dub = callPackage ../development/tools/build-managers/dub { };
 
@@ -1739,6 +1740,7 @@ in
   });
   fontforge-gtk = callPackage ../tools/misc/fontforge {
     withGTK = true;
+    gtk2 = gtk2-x11;
     inherit (darwin.apple_sdk.frameworks) Carbon Cocoa;
   };
 
@@ -1843,7 +1845,7 @@ in
   gazebo-headless = gazeboSimulator.gazebo6-headless;
 
   gbdfed = callPackage ../tools/misc/gbdfed {
-    gtk = gtk2;
+    gtk = gtk2-x11;
   };
 
   gdmap = callPackage ../tools/system/gdmap { };
@@ -1867,6 +1869,8 @@ in
   gibo = callPackage ../tools/misc/gibo { };
 
   gifsicle = callPackage ../tools/graphics/gifsicle { };
+
+  git-crecord = callPackage ../applications/version-management/git-crecord { };
 
   git-lfs = callPackage ../applications/version-management/git-lfs { };
 
@@ -2124,6 +2128,8 @@ in
   pxz = callPackage ../tools/compression/pxz { };
 
   hans = callPackage ../tools/networking/hans { };
+
+  h2 = callPackage ../servers/h2 { };
 
   haproxy = callPackage ../tools/networking/haproxy { };
 
@@ -3037,7 +3043,7 @@ in
 
   nmap = callPackage ../tools/security/nmap { };
 
-  nmap_graphical = callPackage ../tools/security/nmap {
+  nmap-graphical = callPackage ../tools/security/nmap {
     graphicalSupport = true;
   };
 
@@ -3661,6 +3667,8 @@ in
 
   rubber = callPackage ../tools/typesetting/rubber { };
 
+  rubocop = callPackage ../development/tools/rubocop { };
+
   runningx = callPackage ../tools/X11/runningx { };
 
   runzip = callPackage ../tools/archivers/runzip { };
@@ -4068,6 +4076,8 @@ in
   trickle = callPackage ../tools/networking/trickle {};
 
   trousers = callPackage ../tools/security/trousers { };
+
+  tryton = callPackage ../applications/office/tryton { };
 
   omapd = callPackage ../tools/security/omapd { };
 
@@ -4508,6 +4518,8 @@ in
 
   xwinmosaic = callPackage ../tools/X11/xwinmosaic {};
 
+  yarn = callPackage ../development/tools/yarn  { };
+
   yank = callPackage ../tools/misc/yank { };
 
   yaml-merge = callPackage ../tools/text/yaml-merge { };
@@ -4728,6 +4740,7 @@ in
   gambit = callPackage ../development/compilers/gambit { };
 
   gcc = gcc5;
+  gcc-unwrapped = gcc.cc;
 
   wrapCCMulti = cc:
     if system == "x86_64-linux" then lowPrio (
@@ -5279,7 +5292,6 @@ in
   mozart = mozart-binary;
 
   nim = callPackage ../development/compilers/nim { };
-  nimble = callPackage ../development/tools/nimble { };
   nrpl = callPackage ../development/tools/nrpl { };
 
   neko = callPackage ../development/compilers/neko { };
@@ -5624,7 +5636,9 @@ in
 
   kanif = callPackage ../applications/networking/cluster/kanif { };
 
-  lxappearance = callPackage ../desktops/lxde/core/lxappearance {};
+  lxappearance = callPackage ../desktops/lxde/core/lxappearance {
+    gtk2 = gtk2-x11;
+  };
 
   lxmenu-data = callPackage ../desktops/lxde/core/lxmenu-data.nix { };
 
@@ -5741,6 +5755,14 @@ in
     php56
     php70
     php71;
+
+  php-embed = php71-embed;
+
+  php71-embed = php71.override {
+    config.php.embed = true;
+    config.php.apxs2 = false;
+  };
+
 
   picoc = callPackage ../development/interpreters/picoc {};
 
@@ -6356,6 +6378,8 @@ in
   };
 
   heroku = callPackage ../development/tools/heroku { };
+
+  htmlunit-driver = callPackage ../development/tools/selenium/htmlunit-driver { };
 
   hyenae = callPackage ../tools/networking/hyenae { };
 
@@ -7495,7 +7519,9 @@ in
   cairomm = callPackage ../development/libraries/cairomm { };
 
   pango = callPackage ../development/libraries/pango { };
-  pangomm = callPackage ../development/libraries/pangomm { };
+  pangomm = callPackage ../development/libraries/pangomm {
+    inherit (darwin.apple_sdk.frameworks) ApplicationServices;
+  };
 
   pangox_compat = callPackage ../development/libraries/pangox-compat { };
 
@@ -7511,6 +7537,10 @@ in
     cupsSupport = config.gtk2.cups or stdenv.isLinux;
     gdktarget = if stdenv.isDarwin then "quartz" else "x11";
     inherit (darwin.apple_sdk.frameworks) AppKit Cocoa;
+  };
+
+  gtk2-x11 = gtk2.override {
+    gdktarget = "x11";
   };
 
   gtk3 = callPackage ../development/libraries/gtk+/3.x.nix { };
@@ -7786,7 +7816,7 @@ in
 
   libav = libav_11; # branch 11 is API-compatible with branch 10
   libav_all = callPackage ../development/libraries/libav { };
-  inherit (libav_all) libav_0_8 libav_11;
+  inherit (libav_all) libav_0_8 libav_11 libav_12;
 
   libavc1394 = callPackage ../development/libraries/libavc1394 { };
 
@@ -9069,7 +9099,9 @@ in
 
   popt = callPackage ../development/libraries/popt { };
 
-  portaudio = callPackage ../development/libraries/portaudio { };
+  portaudio = callPackage ../development/libraries/portaudio {
+    inherit (darwin.apple_sdk.frameworks) AudioToolbox AudioUnit CoreAudio CoreServices Carbon;
+  };
 
   portmidi = callPackage ../development/libraries/portmidi {};
 
@@ -9876,6 +9908,8 @@ in
 
   yajl = callPackage ../development/libraries/yajl { };
 
+  yubioath-desktop = callPackage ../applications/misc/yubioath-desktop { };
+
   yubico-piv-tool = callPackage ../tools/misc/yubico-piv-tool { };
 
   yubikey-neo-manager = callPackage ../tools/misc/yubikey-neo-manager { };
@@ -10225,6 +10259,8 @@ in
     erlang = erlangR16;
   };
 
+  couchpotato = callPackage ../servers/couchpotato {};
+
   dico = callPackage ../servers/dico { };
 
   dict = callPackage ../servers/dict {
@@ -10422,11 +10458,16 @@ in
 
   pshs = callPackage ../servers/http/pshs { };
 
-  libpulseaudio = callPackage ../servers/pulseaudio { libOnly = true; };
+  libpulseaudio = callPackage ../servers/pulseaudio {
+    libOnly = true;
+    inherit (darwin.apple_sdk.frameworks) CoreServices AudioUnit Cocoa;
+  };
 
   # Name is changed to prevent use in packages;
   # please use libpulseaudio instead.
-  pulseaudioLight = callPackage ../servers/pulseaudio { };
+  pulseaudioLight = callPackage ../servers/pulseaudio {
+    inherit (darwin.apple_sdk.frameworks) CoreServices AudioUnit Cocoa;
+  };
 
   pulseaudioFull = callPackage ../servers/pulseaudio {
     gconf = gnome3.gconf;
@@ -10437,6 +10478,7 @@ in
     bluetoothSupport = true;
     remoteControlSupport = true;
     zeroconfSupport = true;
+    inherit (darwin.apple_sdk.frameworks) CoreServices AudioUnit Cocoa;
   };
 
   tomcat_connectors = callPackage ../servers/http/apache-modules/tomcat-connectors { };
@@ -10551,7 +10593,6 @@ in
   prometheus = callPackage ../servers/monitoring/prometheus { };
   prometheus-alertmanager = callPackage ../servers/monitoring/prometheus/alertmanager.nix { };
   prometheus-blackbox-exporter = callPackage ../servers/monitoring/prometheus/blackbox-exporter.nix { };
-  prometheus-cli = callPackage ../servers/monitoring/prometheus/cli.nix { };
   prometheus-collectd-exporter = callPackage ../servers/monitoring/prometheus/collectd-exporter.nix { };
   prometheus-haproxy-exporter = callPackage ../servers/monitoring/prometheus/haproxy-exporter.nix { };
   prometheus-json-exporter = callPackage ../servers/monitoring/prometheus/json-exporter.nix { };
@@ -10916,6 +10957,8 @@ in
     stubs = callPackages ../os-specific/darwin/stubs {};
 
     usr-include = callPackage ../os-specific/darwin/usr-include {};
+
+    DarwinTools = callPackage ../os-specific/darwin/DarwinTools {};
   };
 
   devicemapper = lvm2;
@@ -11096,6 +11139,8 @@ in
   tgt = callPackage ../tools/networking/tgt { };
 
   # -- Linux kernel expressions ------------------------------------------------
+
+  lkl = callPackage ../applications/virtualization/lkl { };
 
   linuxHeaders = linuxHeaders_4_4;
 
@@ -12379,19 +12424,7 @@ in
 
   ao = callPackage ../applications/graphics/ao {};
 
-  ardour = ardour5;
-
-  ardour3 =  callPackage ../applications/audio/ardour/ardour3.nix {
-    inherit (gnome2) libgnomecanvas libgnomecanvasmm;
-    inherit (vamp) vampSDK;
-  };
-
-  ardour4 =  callPackage ../applications/audio/ardour/ardour4.nix {
-    inherit (gnome2) libgnomecanvas libgnomecanvasmm;
-    inherit (vamp) vampSDK;
-  };
-
-  ardour5 =  callPackage ../applications/audio/ardour {
+  ardour = callPackage ../applications/audio/ardour {
     inherit (gnome2) libgnomecanvas libgnomecanvasmm;
     inherit (vamp) vampSDK;
   };
@@ -13197,7 +13230,9 @@ in
 
   gpa = callPackage ../applications/misc/gpa { };
 
-  gpicview = callPackage ../applications/graphics/gpicview { };
+  gpicview = callPackage ../applications/graphics/gpicview {
+    gtk2 = gtk2-x11;
+  };
 
   gqrx = callPackage ../applications/misc/gqrx { };
 
@@ -13440,6 +13475,8 @@ in
   linssid = qt5.callPackage ../applications/networking/linssid { };
 
   manuskript = callPackage ../applications/editors/manuskript { };
+
+  manul = callPackage ../development/tools/manul { };
 
   mi2ly = callPackage ../applications/audio/mi2ly {};
 
@@ -14457,6 +14494,8 @@ in
   pavucontrol = callPackage ../applications/audio/pavucontrol { };
 
   paraview = callPackage ../applications/graphics/paraview { };
+
+  packet = callPackage ../development/tools/packet { };
 
   pbrt = callPackage ../applications/graphics/pbrt { };
 
@@ -15690,7 +15729,9 @@ in
     inherit (gnome2) libgnomeprint libgnomeprintui libgnomecanvas;
   };
 
-  apvlv = callPackage ../applications/misc/apvlv { };
+  apvlv = callPackage ../applications/misc/apvlv {
+    gtk2 = gtk2-x11;
+  };
 
   xpdf = callPackage ../applications/misc/xpdf {
     base14Fonts = "${ghostscript}/share/ghostscript/fonts";
@@ -17588,7 +17629,7 @@ in
 
   mnemonicode = callPackage ../misc/mnemonicode { };
 
-  mysqlWorkbench = newScope gnome2 ../applications/misc/mysql-workbench (let mysql = mysql57; in {
+  mysql-workbench = newScope gnome2 ../applications/misc/mysql-workbench (let mysql = mysql57; in {
     automake = automake113x;
     gdal = gdal.override {mysql = mysql // {lib = {dev = mysql;};};};
     mysql = mysql;
@@ -17993,4 +18034,6 @@ in
   fpm2 = callPackage ../tools/security/fpm2 { };
 
   simplenote = callPackage ../applications/misc/simplenote { };
+
+  hy = callPackage ../development/interpreters/hy {};
 }
