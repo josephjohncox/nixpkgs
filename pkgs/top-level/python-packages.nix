@@ -2937,7 +2937,7 @@ in {
 
 
   blockdiag = buildPythonPackage rec {
-    name = "blockdiag";
+    name = "blockdiag-${version}";
     version = "1.5.3";
 
     src = pkgs.fetchurl {
@@ -6291,9 +6291,9 @@ in {
       sha256 = "05f49f6hnl7npmi7kigg0ibqk8s3fhzx1ivvz1kqvlv4ay3paajc";
     };
 
-    buildInputs = [
-      pkgs.glibcLocales
-    ];
+    buildInputs = [ pkgs.glibcLocales ];
+
+    LC_ALL="en_US.UTF-8";
 
     propagatedBuildInputs = with self; [
       six
@@ -6304,10 +6304,8 @@ in {
       docker_pycreds
     ];
 
-    # Version conflict
+    # Flake8 version conflict
     doCheck = false;
-
-    LC_ALL="en_US.UTF-8";
 
     meta = {
       description = "An API client for docker written in Python";
@@ -7851,7 +7849,7 @@ in {
     meta = with stdenv.lib; {
       description = "Accessing and Modifying INI files";
       license = licenses.mit;
-      maintainers = [ "abcz2.uprola@gmail.com" ];
+      maintainers = with maintainers; [ danbst ];
     };
   };
 
@@ -19309,17 +19307,34 @@ in {
     '';
 
     preConfigure = optionalString (versionAtLeast protobuf.version "2.6.0") ''
-      PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION=cpp
-      PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION_VERSION=2
+      export PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION=cpp
+      export PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION_VERSION=2
     '';
 
-    checkPhase = if versionAtLeast protobuf.version "2.6.0" then ''
+    preBuild = optionalString (versionAtLeast protobuf.version "2.6.0") ''
+      ${python}/bin/${python.executable} setup.py build_ext --cpp_implementation
+    '';
+
+    checkPhase = ''
+      runHook preCheck
+    '' + (if versionAtLeast protobuf.version "2.6.0" then ''
       ${python.executable} setup.py google_test --cpp_implementation
+      echo "sanity checking the C extension . . ."
+      echo "import google.protobuf.descriptor" | ${python.executable}
     '' else ''
       ${python.executable} setup.py test
+    '') + ''
+      runHook postCheck
     '';
 
     installFlags = optional (versionAtLeast protobuf.version "2.6.0") "--install-option='--cpp_implementation'";
+
+    # the _message.so isn't installed, so we'll do that manually.
+    # if someone can figure out a less hacky way to get the _message.so to
+    # install, please do replace this.
+    postInstall = optionalString (versionAtLeast protobuf.version "2.6.0") ''
+      cp -v $(find build -name "_message*") $out/${python.sitePackages}/google/protobuf/pyext
+    '';
 
     doCheck = true;
 
@@ -22237,7 +22252,7 @@ in {
       meta = with stdenv.lib; {
         description = "A Python binding to QScintilla, Qt based text editing control";
         license = licenses.lgpl21Plus;
-        maintainers = [ "abcz2.uprola@gmail.com" ];
+        maintainers = with maintainers; [ danbst ];
         platforms = platforms.linux;
       };
     };
@@ -24837,6 +24852,9 @@ in {
     propagatedBuildInputs = with self; [
       matplotlib
     ];
+
+    # fails due to trying to run CSS as test
+    doCheck = false;
 
     meta = {
       description = "Scientific reports with embedded python computations with reST, LaTeX or markdown";
@@ -28761,13 +28779,13 @@ EOF
   };
 
   libvirt = let
-    version = "2.5.0";
+    version = "3.0.0";
   in assert version == pkgs.libvirt.version; pkgs.stdenv.mkDerivation rec {
     name = "libvirt-python-${version}";
 
     src = pkgs.fetchurl {
       url = "http://libvirt.org/sources/python/${name}.tar.gz";
-      sha256 = "1lanyrk4invs5j4jrd7yvy7g8kilihjbcrgs5arx8k3bs9x7izgl";
+      sha256 = "1ha4bqf029si1lla1z7ca786w571fh3wfs4h7zaglfk4gb2w39wl";
     };
 
     buildInputs = with self; [ python pkgs.pkgconfig pkgs.libvirt lxml ];
@@ -29102,7 +29120,7 @@ EOF
     meta = {
       homepage = https://developers.google.com/storage/docs/gsutil;
       description = "Google Cloud Storage Tool";
-      maintainers = [ "Russell O'Connor <oconnorr@google.com>" ];
+      maintainers = with maintainers; [ roconnor ];
       license = licenses.asl20;
     };
     doCheck = false;
