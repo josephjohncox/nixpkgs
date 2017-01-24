@@ -9364,6 +9364,19 @@ in
       dontDisableStatic = true;
       configureFlags = "--enable-static";
     });
+    sparsehash = lib.overrideDerivation sparsehash (args: {
+      dontDisableStatic = true;
+      configureFlags = "--enable-static";
+    });
+    google-gflags = lib.overrideDerivation google-gflags (args: {
+      dontDisableStatic = true;
+      configureFlags = "--enable-static";
+      cmakeFlags = [
+        "-DCMAKE_CXX_FLAGS=\"-fPIC\""
+        "-DBUILD_SHARED_LIBS=OFF"
+        "-DBUILD_STATIC_LIBS=ON"
+      ];
+    });
   }
   );
 
